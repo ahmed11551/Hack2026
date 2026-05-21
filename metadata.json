@@ -1,0 +1,6 @@
+{
+  "name": "Telegram Channel Growth Planner",
+  "description": "Interactive planner to discover highly profitable Telegram niches, simulate the full user flow (Channel to Bot to Mini App), test card/SBP checkouts in rubles, copy ready-made bot scripts, and compute passive revenue models.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
