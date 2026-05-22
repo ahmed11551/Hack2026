@@ -61,6 +61,7 @@ export default function App() {
   const [simPhoneMock, setSimPhoneMock] = useState<string>("+7 (999) 123-45-67");
   const [checkoutPrice, setCheckoutPrice] = useState<number>(490);
   const [showTransactionAlert, setShowTransactionAlert] = useState<boolean>(false);
+  const [showYooKassaReceipt, setShowYooKassaReceipt] = useState<boolean>(false);
 
   // Simulated Chat Bot Integration States & Logic
   const [chatMessages, setChatMessages] = useState<Array<{
@@ -168,14 +169,14 @@ export default function App() {
     } else if (action === "legal_offer") {
       setChatMessages(prev => [...prev, {
         sender: "bot",
-        text: `📜 **ВЫДЕРЖКА ИЗ ПУБЛИЧНОЙ ОФЕРТЫ (ст. 437 ГК РФ):**\n\n1. **Предмет договора:** Оператор (ИП Смирнов А.А.) предоставляет доступ к закрытым информационным материалам в Telegram в виде подписки.\n2. **Порядок акцепта:** Оплата тарифа является полным и безоговорочным акцептом условий настоящей Оферты.\n3. **Условия предоставления:** Доступ открывается автоматически в течение 5 секунд после фискализации платежа в системе ЮKassa.\n4. **Ограничение ответственности:** Все материалы носят экспертно-информационный характер. Доход зависит от усердия пользователя и правильности воспроизведения настроек.`,
+        text: `📜 **ВЫДЕРЖКА ИЗ ПУБЛИЧНОЙ ОФЕРТЫ (ст. 437 ГК РФ):**\n\n1. **Предмет договора:** Оператор (Самозанятая Себиева Рояна, ИНН 770980461804) предоставляет доступ к закрытым информационным материалам в Telegram в виде подписки.\n2. **Порядок акцепта:** Оплата тарифа является полным и безоговорочным акцептом условий настоящей Оферты.\n3. **Условия предоставления:** Доступ открывается автоматически в течение 5 секунд после фискализации платежа в системе ЮKassa.\n4. **Ограничение ответственности:** Все материалы носят экспертно-информационный характер. Доход зависит от усердия пользователя и правильности воспроизведения настроек.`,
         time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
         buttons: [{ text: "💸 Условия возврата", action: "legal_refund" }, { text: "💬 Назад в меню", action: "start" }]
       }]);
     } else if (action === "legal_refund") {
       setChatMessages(prev => [...prev, {
         sender: "bot",
-        text: `💸 **УСЛОВИЯ ВОЗВРАТА СРЕДСТВ (ст. 26.1 ЗоЗПП РФ):**\n\n1. Потребитель вправе отказаться от товара/услуги в любое время до его передачи.\n2. В силу специфики электронного цифрового контента, возврат за уже открытый доступ к базе знаний не производится, поскольку услуга считается оказанной в момент предоставления доступа.\n3. В случае задержки активации или технических проблем с ботом, уплаченные средства возвращаются оператору в полном объеме по реквизитам плательщика в течение 1-3 рабочих дней.\n\nЗапросы направляются на **refund@quantumtraffic.ru**.\n\nМы платим налоги (УСН 6% или НПД для самозанятых) и предоставляем электронный чек при совершении каждой транзакции!`,
+        text: `💸 **УСЛОВИЯ ВОЗВРАТА СРЕДСТВ (ст. 26.1 ЗоЗПП РФ):**\n\n1. Потребитель вправе отказаться от товара/услуги в любое время до его передачи.\n2. В силу специфики электронного цифрового контента, возврат за уже открытый доступ к базе знаний не производится, поскольку услуга считается оказанной в момент предоставления доступа.\n3. В случае задержки активации или технических проблем с ботом, уплаченные средства возвращаются оператору в полном объеме по реквизитам плательщика в течение 1-3 рабочих дней.\n\nЗапросы направляются на **help@startappai.ru**.\n\nМы платим налоги (НПД для самозанятых) и предоставляем электронный чек при совершении каждой транзакции!`,
         time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
         buttons: [{ text: "💳 Выбрать Тариф", action: "buy" }, { text: "💬 Назад в меню", action: "start" }]
       }]);
@@ -1275,8 +1276,8 @@ export default function App() {
                           {/* Payment Header */}
                           <div className="space-y-1 pb-2 border-b border-black/10">
                             <div className="flex justify-between items-center text-[10px] text-black/50 font-mono uppercase">
-                              <span>ООО КвантумТрафик</span>
-                              <span>ЮKassa</span>
+                              <span>Себиева Рояна / startappai.ru</span>
+                              <span className="font-bold text-sky-600">ЮKassa</span>
                             </div>
                             <h5 className="text-xs font-black uppercase text-black tracking-tight flex items-center justify-between">
                               <span>Оплата подписки VIP</span>
@@ -1331,19 +1332,19 @@ export default function App() {
                                     <span className="w-3 h-3 bg-black" />
                                   </div>
                                 </div>
-                                <p className="text-[8px] text-neutral-500 max-w-[200px] mx-auto">
-                                  Отсканируйте код или нажмите кнопку ниже для оплаты в приложении вашего банка (Т-Банк, Сбербанк, Альфа-Банк).
+                                <p className="text-[8px] text-neutral-500 max-w-[200px] mx-auto leading-normal">
+                                  Отсканируйте код или нажмите кнопку ниже для мгновенной оплаты в приложении вашего банка.
                                 </p>
                               </div>
                             ) : (
-                              <div className="bg-neutral-55 p-3 rounded-xl border border-neutral-150 space-y-2">
+                              <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200 space-y-2">
                                 <div className="space-y-1">
                                   <span className="text-[8px] font-mono text-neutral-500 uppercase block">Номер карты</span>
                                   <input 
                                     type="text" 
                                     placeholder="2200 4500 1234 5678" 
                                     readOnly 
-                                    className="w-full bg-white border border-neutral-200 p-1.5 rounded text-[10px] focus:outline-none focus:border-sky-500" 
+                                    className="w-full bg-white border border-neutral-200 p-1.2 rounded text-[10px] focus:outline-none" 
                                     value="2200 4500 1234 5678"
                                   />
                                 </div>
@@ -1388,52 +1389,164 @@ export default function App() {
                         <div className="flex-1 flex flex-col justify-between bg-zinc-950 -m-3 p-3.5 rounded-[34px] border-2 border-[#C1FF00]">
                           
                           {/* Checked header */}
-                          <div className="text-center py-3 space-y-1.5 border-b border-[#C1FF00]/20 pb-4">
-                            <div className="w-9 h-9 bg-[#C1FF00]/10 rounded-full flex items-center justify-center mx-auto border border-[#C1FF00]/40">
-                              <Unlock className="w-4 h-4 text-[#C1FF00]" />
-                            </div>
-                            <h5 className="text-xs font-black uppercase text-white tracking-wide">
+                          <div className="text-center py-2 space-y-1 border-b border-[#C1FF00]/20">
+                            <h5 className="text-[11px] font-black uppercase text-white tracking-wide">
                               ДОСТУП ОТКРЫТ! 🎉
                             </h5>
-                            <p className="text-[9px] text-[#C1FF00] uppercase font-mono font-bold tracking-widest">
-                              СТАТУС: VIP-КЛИЕНТ (АКТИВНО)
+                            <p className="text-[8px] text-[#C1FF00] uppercase font-mono font-bold tracking-widest">
+                              СТАТУС: {showYooKassaReceipt ? "ФИСКАЛИЗИРОВАН (ФЗ-54)" : "VIP-КЛИЕНТ (АКТИВНО)"}
                             </p>
                           </div>
 
-                          {/* Secret Locked content unlocked */}
-                          <div className="space-y-3 flex-grow my-auto overflow-y-auto max-h-[220px] pr-1">
-                            <div className="p-3 bg-neutral-900 rounded-xl border border-white/5 space-y-1">
-                              <span className="text-[8px] font-mono text-[#C1FF00] uppercase font-black block">🔑 СУПЕР-СХЕМА №1:</span>
-                              <p className="text-[9px] text-white/95 leading-relaxed">
-                                Как бесплатно питаться в ресторанах РФ за счет багов партнерских акций агрегаторов доставки.
-                              </p>
-                            </div>
-
-                            <div className="p-3 bg-neutral-900 rounded-xl border border-white/5 space-y-1">
-                              <span className="text-[8px] font-mono text-[#C1FF00] uppercase font-black block">💰 ЛАЙФХАК №2:</span>
-                              <p className="text-[9px] text-white/95 leading-relaxed">
-                                Экономия до 65% на покупке дорогой техники (Apple, Dyson) через СберМегаМаркет + кэшбэк.
-                              </p>
-                            </div>
-
-                            <div className="p-3 bg-neutral-900 rounded-xl border border-white/5 space-y-1">
-                              <span className="text-[8px] font-mono text-[#C1FF00] uppercase font-black block">🔐 БОНУС МЕСЯЦА:</span>
-                              <p className="text-[9px] text-white/95 leading-relaxed">
-                                Секретная база закрытых промокодов Сбермаркет со скидкой 1000 ₽ на любую корзину.
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2">
+                          {/* Toggle between Content and Electronic Receipt */}
+                          <div className="grid grid-cols-2 gap-1.5 p-1 bg-white/5 rounded-lg border border-white/10 my-1">
                             <button
                               type="button"
-                              onClick={() => { setSimulationPaid(false); setSimStep(1); }}
+                              onClick={() => setShowYooKassaReceipt(false)}
+                              className={`py-1 rounded text-[8px] uppercase font-extrabold tracking-tight transition ${
+                                !showYooKassaReceipt 
+                                  ? "bg-[#C1FF00] text-black" 
+                                  : "text-white/70 hover:text-white"
+                              }`}
+                            >
+                              🔑 Секреты клуба
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setShowYooKassaReceipt(true)}
+                              className={`py-1 rounded text-[8px] uppercase font-extrabold tracking-tight transition ${
+                                showYooKassaReceipt 
+                                  ? "bg-[#C1FF00] text-black" 
+                                  : "text-white/70 hover:text-white"
+                              }`}
+                            >
+                              📄 Чек ФЗ-54 (ЮKassa)
+                            </button>
+                          </div>
+
+                          {/* Secret Locked content unlocked */}
+                          {!showYooKassaReceipt ? (
+                            <div className="space-y-2.5 flex-grow my-auto overflow-y-auto max-h-[220px] pr-1">
+                              <div className="p-2.5 bg-neutral-900 rounded-xl border border-white/5 space-y-1">
+                                <span className="text-[8px] font-mono text-[#C1FF00] uppercase font-black block">🔑 СУПЕР-СХЕМА №1:</span>
+                                <p className="text-[9px] text-white/95 leading-relaxed">
+                                  Как бесплатно питаться в ресторанах РФ за счет багов партнерских акций агрегаторов доставки.
+                                </p>
+                              </div>
+
+                              <div className="p-2.5 bg-neutral-900 rounded-xl border border-white/5 space-y-1">
+                                <span className="text-[8px] font-mono text-[#C1FF00] uppercase font-black block">💰 ЛАЙФХАК №2:</span>
+                                <p className="text-[9px] text-white/95 leading-relaxed">
+                                  Экономия до 65% на покупке дорогой техники (Apple, Dyson) через СберМегаМаркет + кэшбэк.
+                                </p>
+                              </div>
+
+                              <div className="p-2.5 bg-neutral-900 rounded-xl border border-white/5 space-y-1">
+                                <span className="text-[8px] font-mono text-[#C1FF00] uppercase font-black block">🔐 БОНУС МЕСЯЦА:</span>
+                                <p className="text-[9px] text-white/95 leading-relaxed">
+                                  Секретная база закрытых промокодов Сбермаркет со скидкой 1000 ₽ на любую корзину.
+                                </p>
+                              </div>
+                            </div>
+                          ) : (
+                            /* OFFICIAL COMPLIANCE RECEIPT (ЧЕК ФЗ-54) DESIGNED PERFECTLY FOR YOOMONEY MODERATION SCREENSHOTS */
+                            <div className="bg-[#fcfbf7] text-black p-3 rounded-lg border border-neutral-300 font-mono text-[8px] flex-grow my-auto shadow-md leading-tight overflow-y-auto max-h-[220px] pr-1 select-text">
+                              <div className="text-center font-bold pb-1 text-[9px] border-b border-dashed border-black/30">
+                                КАССОВЫЙ ЧЕК / ПРИХОД
+                              </div>
+                              
+                              <div className="space-y-0.5 pt-1.5 pb-1.5 border-b border-dashed border-black/30">
+                                <div className="flex justify-between">
+                                  <span>ПРОДАВЕЦ:</span>
+                                  <span className="font-bold">Самозанятая Себиева Рояна</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>ИНН:</span>
+                                  <span className="font-bold">770980461804</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>РЕЖИМ НАЛОГА:</span>
+                                  <span>НПД (Самозанятый)</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>БАНК СМЗ:</span>
+                                  <span>ООО "ОЗОН БАНК"</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>АДРЕС ККТ:</span>
+                                  <span>startappai.ru</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>ОПЕРАТОР:</span>
+                                  <span>ООО НКО "ЮМани"</span>
+                                </div>
+                              </div>
+
+                              <div className="py-1.5 border-b border-dashed border-black/30 text-[8px] leading-snug">
+                                <span className="font-bold block uppercase">НАИМЕНОВАНИЕ УСЛУГИ:</span>
+                                <div className="pl-1">
+                                  Предоставление платного VIP-доступа на 30 дней («{selectedNiche?.title || "Хак-Заработок"}»)
+                                </div>
+                                <div className="flex justify-between font-bold pt-1">
+                                  <span>ИТОГО К ОПЛАТЕ:</span>
+                                  <span>{checkoutPrice}.00 ₽</span>
+                                </div>
+                                <div className="flex justify-between text-[7px] text-black/60">
+                                  <span>В т.ч. НДС:</span>
+                                  <span>Без НДС (УСН)</span>
+                                </div>
+                              </div>
+
+                              <div className="py-1 border-b border-dashed border-black/30 text-[7px] space-y-0.5">
+                                <div className="flex justify-between">
+                                  <span>ОПЛАЧЕНО СБП:</span>
+                                  <span>{checkoutPrice}.00 ₽</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>ДАТА ЧЕКА:</span>
+                                  <span>{new Date().toLocaleDateString('ru-RU')} {new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}</span>
+                                </div>
+                                <div className="flex justify-between font-bold text-sky-700">
+                                  <span>ТРАНЗАКЦИЯ:</span>
+                                  <span>УСПЕШНО OPL_89321</span>
+                                </div>
+                              </div>
+
+                              <div className="pt-1.5 flex items-start gap-1.5">
+                                {/* Digital Simulated QR Code */}
+                                <div className="w-9 h-9 bg-black shrink-0 p-0.5 rounded flex flex-wrap justify-between">
+                                  <div className="w-1.5 h-1.5 bg-white" />
+                                  <div className="w-1.5 h-1.5 bg-white" />
+                                  <div className="w-1.5 h-1.5 bg-white" />
+                                  <div className="w-full h-0.5" />
+                                  <div className="w-1 h-1.5 bg-white" />
+                                  <div className="w-1.5 h-1 bg-white" />
+                                  <div className="w-1.5 h-1.5 bg-white" />
+                                </div>
+                                <div className="text-[6px] text-black/70 space-y-0.5 self-center">
+                                  <div>РН ККТ: 000459321104889</div>
+                                  <div>ФН №: 9945440302928131</div>
+                                  <div>ФД: 00388912 • ФП: 382902911</div>
+                                  <span className="font-bold text-emerald-700">ФЗ-54 ФИСКАЛИЗИРОВАНО</span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="space-y-2 mt-1">
+                            {showYooKassaReceipt && (
+                              <div className="text-[7.5px] bg-sky-950/40 border border-sky-500/20 text-sky-450 p-1 rounded text-center leading-normal">
+                                📸 <b>Сделайте скриншот этого экрана с чеком</b> и пошлите модератору ЮКассы. Это идеальное подтверждение соответствия ФЗ-54!
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => { setSimulationPaid(false); setSimStep(1); setShowYooKassaReceipt(false); }}
                               className="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-extrabold py-2 rounded text-[9px] uppercase tracking-wide"
                             >
                               🔄 СБРОСИТЬ ТЕСТ (СИМУЛИРОВАТЬ СНОВА)
                             </button>
                           </div>
-
                         </div>
                       )}
 
