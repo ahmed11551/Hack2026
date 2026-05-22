@@ -109,7 +109,7 @@ export default function App() {
 
   const handleSendChatMessage = async (customText?: string) => {
     const textToSend = customText || userInputText.trim();
-    if (!textToSend || !selectedNiche) return;
+    if (!textToSend) return;
 
     if (!customText) {
       setUserInputText("");
@@ -131,8 +131,8 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: textToSend,
-          channelTitle: selectedNiche.title,
-          channelTagline: selectedNiche.tagline
+          channelTitle: selectedNiche ? selectedNiche.title : "Хак-Заработок",
+          channelTagline: selectedNiche ? selectedNiche.tagline : "Схемы экономии, заработок и IT-лайфхаки на каждый день"
         })
       });
       const data = await res.json();
