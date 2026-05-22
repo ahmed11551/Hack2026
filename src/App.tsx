@@ -38,7 +38,7 @@ export default function App() {
   const [selectedNiche, setSelectedNiche] = useState<NicheAnalysis | null>(null);
   
   // App Navigation Tabs
-  const [activeTab, setActiveTab] = useState<"ideation" | "simulator" | "competitors" | "code">("ideation");
+  const [activeTab, setActiveTab] = useState<"ideation" | "simulator" | "competitors" | "code">("simulator");
 
   // Loading flags
   const [loadingNiche, setLoadingNiche] = useState<boolean>(false);
@@ -408,13 +408,13 @@ export default function App() {
           <div className="space-y-2">
             <p className="text-[#C1FF00] font-mono text-xs tracking-widest uppercase flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#C1FF00] animate-pulse" />
-              TELEGRAM СВЯЗКА: КАНАЛ + БОТ + MINI APP v4.0
+              ИНТЕРАКТИВНЫЙ СИМУЛЯТОР: КАНАЛ + БОТ + MINI APP v4.0
             </p>
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black leading-[0.85] tracking-tighter uppercase font-sans">
               ХАК-ЗАРАБОТОК <span className="text-[#C1FF00]">2026</span>
             </h1>
             <p className="text-white/50 text-xs sm:text-sm font-sans tracking-tight max-w-xl">
-              Запуск полностью автоматизированного бизнеса в Телеграм с выводом прямо на российские карты в рублях.
+              Симуляция пути клиента от рекламного поста в канале до фискализации платежа по ФЗ-54 внутри встроенного Mini App.
             </p>
           </div>
 
@@ -423,7 +423,7 @@ export default function App() {
               490 ₽ – 2 990 ₽
             </div>
             <p className="text-white/40 text-[10px] uppercase font-mono tracking-widest mt-1">
-              Комфортный чек подписки в рублях
+              Стоимость закрытых схем в рублях
             </p>
             {geminiConfigured ? (
               <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold bg-[#C1FF00]/20 text-[#C1FF00] px-2 py-0.5 rounded mt-2">
@@ -437,58 +437,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* PROMINENT ECOSYSTEM WORKSPACE TABS */}
-        <div className="flex flex-wrap gap-2 mb-8 bg-zinc-900/60 p-1 rounded-xl border border-white/10 self-start z-10 relative">
-          <button
-            type="button"
-            onClick={() => setActiveTab("ideation")}
-            className={`px-4 py-2.5 rounded-lg text-xs font-bold uppercase transition-all duration-200 ${
-              activeTab === "ideation" 
-                ? "bg-[#C1FF00] text-black shadow-lg" 
-                : "text-white/70 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            🎯 I. Проектирование Ниши & Расчёты
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => setActiveTab("simulator")}
-            className={`px-4 py-2.5 rounded-lg text-xs font-bold uppercase transition-all duration-200 flex items-center gap-1.5 ${
-              activeTab === "simulator" 
-                ? "bg-[#C1FF00] text-black shadow-lg" 
-                : "text-white/70 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            📱 II. Интерактивный Симулятор Воронки
-            <span className="bg-red-500 text-white text-[8px] px-1 rounded animate-pulse">LIVE</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("competitors")}
-            className={`px-4 py-2.5 rounded-lg text-xs font-bold uppercase transition-all duration-200 ${
-              activeTab === "competitors" 
-                ? "bg-[#C1FF00] text-black shadow-lg" 
-                : "text-white/70 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            🕵️ III. Баттл с Конкурентами (Анализ)
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("code")}
-            className={`px-4 py-2.5 rounded-lg text-xs font-bold uppercase transition-all duration-200 ${
-              activeTab === "code" 
-                ? "bg-[#C1FF00] text-black shadow-lg" 
-                : "text-white/70 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            ⚙️ IV. Код Бот-Контейнера & Старт
-          </button>
-        </div>
-
         {/* ERROR ALERTS */}
         {errorMessage && (
           <div className="bg-red-950/40 border border-red-500/40 rounded-xl p-4 mb-6 flex items-start gap-3 relative z-10">
@@ -500,26 +448,7 @@ export default function App() {
           </div>
         )}
 
-        {/* DETAILED EDUCATIONAL SYNOPSIS EXPLAINING THE WHOLE ESSENCE */}
-        <div className="mb-8 p-5 bg-gradient-to-r from-sky-950/20 to-black rounded-xl border border-sky-500/20 flex flex-col sm:flex-row items-start gap-4">
-          <div className="bg-sky-500/10 p-2.5 rounded-lg shrink-0">
-            <Info className="w-6 h-6 text-sky-400" />
-          </div>
-          <div className="space-y-2">
-            <h4 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
-              В чём фундаментальная суть проекта? Простыми словами:
-            </h4>
-            <p className="text-xs text-white/80 leading-relaxed font-sans">
-              Обычные Telegram-каналы (просто с картинками или новостями) зарабатывают копейки на редкой и дешевой рекламе. 
-              <b> Мы строим инновационную трёхфазную экосистему</b>: пользователь читает прогревающий вирусный пост в <b>Канале</b> &rarr; 
-              кликает на кнопку &rarr; попадает в <b>Чат-бот</b>, который требует обязательную подписку &rarr; внутри бота запускается 
-              современное <b>Mini App (встроенный сайт прямо в Telegram)</b>, где пользователь оплачивает премиум-доступ через русские платежные системы (<b>СБП, Т-Банк, СберПэй, ЮKassa в рублях</b>) за закрытые схемы экономии и лайфхаки. 
-              Все автоматизировано на 100%, доход капает на русскую карту!
-            </p>
-          </div>
-        </div>
-
-        {/* ACTIVE TAB CONTENT DISPLAY AREA */}
+        {/* ACTIVE CONTENT DISPLAY AREA */}
         <div className="relative z-10">
 
           {/* TAB 1: IDEATION (Niches, calculators, day outline) */}
