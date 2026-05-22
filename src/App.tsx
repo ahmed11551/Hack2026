@@ -62,6 +62,141 @@ export default function App() {
   const [checkoutPrice, setCheckoutPrice] = useState<number>(490);
   const [showTransactionAlert, setShowTransactionAlert] = useState<boolean>(false);
 
+  // Simulated Chat Bot Integration States & Logic
+  const [chatMessages, setChatMessages] = useState<Array<{
+    sender: "bot" | "user";
+    text: string;
+    time: string;
+    buttons?: Array<{ text: string; action: string }>;
+  }>>([]);
+  const [userInputText, setUserInputText] = useState<string>("");
+  const [typingBot, setTypingBot] = useState<boolean>(false);
+
+  // Auto initialize chat when selected niche changes
+  useEffect(() => {
+    if (selectedNiche) {
+      setChatMessages([
+        {
+          sender: "bot",
+          text: `👋 **Приветствуем в официальной Хак-Системе!**\n\nЯ — интеллектуальный бот-помощник канала **«${selectedNiche.title || "Хак-Заработок"}»**.\n\nМы автоматизировали доступ к закрытой базе практических инструкций, схем экономии и заработку с выводом прямо на карты банков РФ в рублях.\n\n🤖 **Главные команды бота:**\n🔹 /buy — Быстрая покупка подписки прямо в чате\n🔹 /info — Подробная информация о проекте и заработке\n🔹 /legal — Юридическая поддержка, публичная оферта и правила возврата средств\n🔹 /support — Написать в техподдержку / Наш ИИ-юрист`,
+          time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+          buttons: [
+            { text: "⚡ Открыть Mini App", action: "miniapp" },
+            { text: "💳 Прямая оплата подписки", action: "buy" },
+            { text: "📜 Юридические документы", action: "legal" }
+          ]
+        }
+      ]);
+    }
+  }, [selectedNiche]);
+
+  const handleSendChatMessage = async (customText?: string) => {
+    const textToSend = customText || userInputText.trim();
+    if (!textToSend || !selectedNiche) return;
+
+    if (!customText) {
+      setUserInputText("");
+    }
+
+    // Add user message to log
+    const userMsg = {
+      sender: "user" as const,
+      text: textToSend,
+      time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    setChatMessages(prev => [...prev, userMsg]);
+    setTypingBot(true);
+
+    try {
+      const res = await fetch("/api/bot-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: textToSend,
+          channelTitle: selectedNiche.title,
+          channelTagline: selectedNiche.tagline
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setChatMessages(prev => [...prev, {
+          sender: "bot",
+          text: data.reply,
+          time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+          buttons: data.suggestedButtons
+        }]);
+      } else {
+        setChatMessages(prev => [...prev, {
+          sender: "bot",
+          text: `❌ Ошибка чат-бота: ${data.error || "Неизвестная ошибка"}`,
+          time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+        }]);
+      }
+    } catch (err) {
+      console.error(err);
+      setChatMessages(prev => [...prev, {
+        sender: "bot",
+        text: "❌ Сетевая ошибка при подключении к ИИ-боту.",
+        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+      }]);
+    } finally {
+      setTypingBot(false);
+    }
+  };
+
+  const handleBotButtonAction = (action: string) => {
+    if (action === "miniapp") {
+      setSimStep(3); // Go to Mini App Catalogue
+    } else if (action === "buy") {
+      handleSendChatMessage("/buy");
+    } else if (action === "legal") {
+      handleSendChatMessage("/legal");
+    } else if (action === "support") {
+      handleSendChatMessage("/support");
+    } else if (action === "info_calc") {
+      handleSendChatMessage("/info");
+    } else if (action === "checkout_490") {
+      setCheckoutPrice(490);
+      setSimStep(4); // Direct checkout
+    } else if (action === "checkout_149") {
+      setCheckoutPrice(149);
+      setSimStep(4); // Direct checkout
+    } else if (action === "checkout_1490") {
+      setCheckoutPrice(1490);
+      setSimStep(4); // Direct checkout
+    } else if (action === "legal_offer") {
+      setChatMessages(prev => [...prev, {
+        sender: "bot",
+        text: `📜 **ВЫДЕРЖКА ИЗ ПУБЛИЧНОЙ ОФЕРТЫ (ст. 437 ГК РФ):**\n\n1. **Предмет договора:** Оператор (ИП Смирнов А.А.) предоставляет доступ к закрытым информационным материалам в Telegram в виде подписки.\n2. **Порядок акцепта:** Оплата тарифа является полным и безоговорочным акцептом условий настоящей Оферты.\n3. **Условия предоставления:** Доступ открывается автоматически в течение 5 секунд после фискализации платежа в системе ЮKassa.\n4. **Ограничение ответственности:** Все материалы носят экспертно-информационный характер. Доход зависит от усердия пользователя и правильности воспроизведения настроек.`,
+        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+        buttons: [{ text: "💸 Условия возврата", action: "legal_refund" }, { text: "💬 Назад в меню", action: "start" }]
+      }]);
+    } else if (action === "legal_refund") {
+      setChatMessages(prev => [...prev, {
+        sender: "bot",
+        text: `💸 **УСЛОВИЯ ВОЗВРАТА СРЕДСТВ (ст. 26.1 ЗоЗПП РФ):**\n\n1. Потребитель вправе отказаться от товара/услуги в любое время до его передачи.\n2. В силу специфики электронного цифрового контента, возврат за уже открытый доступ к базе знаний не производится, поскольку услуга считается оказанной в момент предоставления доступа.\n3. В случае задержки активации или технических проблем с ботом, уплаченные средства возвращаются оператору в полном объеме по реквизитам плательщика в течение 1-3 рабочих дней.\n\nЗапросы направляются на **refund@quantumtraffic.ru**.\n\nМы платим налоги (УСН 6% или НПД для самозанятых) и предоставляем электронный чек при совершении каждой транзакции!`,
+        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+        buttons: [{ text: "💳 Выбрать Тариф", action: "buy" }, { text: "💬 Назад в меню", action: "start" }]
+      }]);
+    } else if (action === "support_taxes") {
+      handleSendChatMessage("Как легально платить налоги в РФ?");
+    } else if (action === "support_refunds") {
+      handleSendChatMessage("Какая политика возврата средств?");
+    } else if (action === "support_kassa") {
+      setChatMessages(prev => [...prev, {
+        sender: "bot",
+        text: `⚙️ **Как настроить ЮKassa самостоятельно:**\n\n1. Зайдите на **yookassa.ru** и отправьте заявку в качестве Самозанятого или ИП.\n2. Из настроек заберите \`shopId\` и \`SecretKey\`.\n3. Пропишите их в конфигурацию вашего ИИ бот-контейнера (инструкции в шаге 4).\n4. Касса будет фискализировать ваши платежи и слать онлайн-чеки клиентам в соответствии с ФЗ-54. Поздравляем, вы работаете полностью по закону!`,
+        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+        buttons: [{ text: "⚙️ Посмотреть код бота", action: "gocode" }]
+      }]);
+    } else if (action === "gocode") {
+      setActiveTab("code");
+    } else if (action === "start") {
+      handleSendChatMessage("/start");
+    }
+  };
+
   // Load Presets on Init
   useEffect(() => {
     async function loadInitialData() {
@@ -884,42 +1019,156 @@ export default function App() {
                         </div>
                       )}
 
-                      {/* SCREEN STEP 2: BOT WELCOME SCREEN */}
+                      {/* SCREEN STEP 2: BOT WELCOME SCREEN & ACTIVE CHAT */}
                       {simStep === 2 && (
-                        <div className="flex-1 flex flex-col justify-between">
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-1.5 pb-2 border-b border-white/5 font-mono text-[9px] text-white/40 uppercase">
-                              🤖 Бот: {selectedNiche?.title || "Хак-Бот"}
+                        <div className="flex-1 flex flex-col justify-between -m-3 bg-[#131d27] p-3 rounded-[34px] overflow-hidden text-white relative">
+                          
+                          {/* Chat header */}
+                          <div className="flex items-center gap-2 pb-2.5 border-b border-white/5 shrink-0 select-none">
+                            <div className="w-6 h-6 rounded-full bg-[#C1FF00] text-black font-extrabold text-[10px] flex items-center justify-center font-mono">
+                              🤖
                             </div>
-
-                            <p className="bg-black/30 p-3 rounded-xl border border-white/5 text-[10px] leading-relaxed">
-                              👋 <b>Приветствуем в Хак-Системе!</b><br /><br />
-                              Для доступа к закрытой базе знаний первого дня и ко всем схемам, вам нужно обязательно подписаться на наш канал.<br /><br />
-                              После подписки нажмите кнопку запуск!
-                            </p>
-
-                            <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[10px] text-amber-200">
-                              📢 При входе бот автоматом проверяет подписку через Telegram API.
+                            <div className="leading-tight flex-1">
+                              <div className="font-bold text-[10px] text-white truncate">
+                                {selectedNiche?.title || "Хак-Бот"}
+                              </div>
+                              <div className="text-[8px] text-[#C1FF00] font-semibold tracking-tight">
+                                бот-юрист • в сети
+                              </div>
                             </div>
-                          </div>
-
-                          <div className="space-y-2">
-                            <a
-                              href="#join"
-                              onClick={(e) => e.preventDefault()}
-                              className="w-full block text-center bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded text-[10px] font-bold"
-                            >
-                              📢 Подписаться на Канал
-                            </a>
-
-                            <button
+                            <button 
                               type="button"
                               onClick={() => setSimStep(3)}
-                              className="w-full bg-[#C1FF00] hover:bg-[#aade02] text-black font-extrabold py-2.5 rounded text-[10px] uppercase tracking-wider"
+                              className="text-[9px] font-bold text-[#C1FF00] bg-[#C1FF00]/10 border border-[#C1FF00]/25 px-2 py-0.5 rounded uppercase font-mono tracking-tight"
                             >
-                              ⚡️ Запустить Mini App
+                              Mini App &rarr;
                             </button>
                           </div>
+
+                          {/* Scrollable Messages viewport */}
+                          <div className="flex-1 overflow-y-auto py-2.5 space-y-3 pr-0.5 max-h-[290px] flex flex-col">
+                            {chatMessages.map((msg, idx) => (
+                              <div 
+                                key={idx} 
+                                className={`flex flex-col max-w-[85%] ${msg.sender === "user" ? "self-end items-end" : "self-start items-start"}`}
+                              >
+                                {/* Message Bubble */}
+                                <div className={`p-2 rounded-2xl text-[10px] leading-relaxed shadow-md ${
+                                  msg.sender === "user" 
+                                    ? "bg-[#2b5278] text-white rounded-tr-none font-sans" 
+                                    : "bg-[#182533] text-white/95 rounded-tl-none font-sans border border-sky-950/20"
+                                }`}>
+                                  {/* Formatted Text rendering */}
+                                  <div className="whitespace-pre-wrap">
+                                    {msg.text.split("\n").map((line, lIdx) => {
+                                      const parts = line.split("**");
+                                      const renderedLine = parts.map((part, pIdx) => {
+                                        if (pIdx % 2 === 1) {
+                                          return <strong key={pIdx} className="text-[#C1FF00] font-extrabold">{part}</strong>;
+                                        }
+                                        return part;
+                                      });
+                                      return (
+                                        <div key={lIdx}>
+                                          {renderedLine}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                  
+                                  <span className="block text-[7px] text-white/30 text-right mt-1 font-mono">
+                                    {msg.time}
+                                  </span>
+                                </div>
+
+                                {/* Inline Keyboard Buttons inside chat bubble */}
+                                {msg.buttons && msg.buttons.length > 0 && (
+                                  <div className="grid grid-cols-1 gap-1.5 mt-2 w-full">
+                                    {msg.buttons.map((btn, bIdx) => (
+                                      <button
+                                        key={bIdx}
+                                        type="button"
+                                        onClick={() => handleBotButtonAction(btn.action)}
+                                        className="w-full bg-[#1c2e40] hover:bg-[#253c54] border border-[#2b4c6e] text-white text-[9px] font-bold py-1.5 px-3 rounded-lg text-center transition tracking-wide uppercase shadow"
+                                      >
+                                        {btn.text}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+
+                            {typingBot && (
+                              <div className="bg-[#182533] p-2.5 rounded-2xl rounded-tl-none text-[9px] text-[#C1FF00] font-mono self-start flex items-center gap-1 shrink-0">
+                                <span className="w-1 h-1 bg-[#C1FF00] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                <span className="w-1 h-1 bg-[#C1FF00] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                <span className="w-1 h-1 bg-[#C1FF00] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                <span className="text-[8px] text-white/40">печатает ответ...</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Quick Suggestion Pills */}
+                          <div className="flex gap-1.5 overflow-x-auto py-1.5 shrink-0 border-t border-white/5 select-none font-sans scrollbar-none">
+                            <button
+                              type="button"
+                              onClick={() => handleSendChatMessage("/start")}
+                              className="bg-black/40 hover:bg-black/70 text-white/60 hover:text-white px-2 py-1 rounded text-[8px] font-mono border border-white/5 text-center whitespace-nowrap shrink-0"
+                            >
+                              🏁 /start
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSendChatMessage("/buy")}
+                              className="bg-black/40 hover:bg-[#C1FF00]/10 text-white/60 hover:text-[#C1FF00] px-2 py-1 rounded text-[8px] font-mono border border-white/5 text-center whitespace-nowrap shrink-0"
+                            >
+                              💳 /buy
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSendChatMessage("/info")}
+                              className="bg-black/40 hover:bg-black/70 text-white/60 hover:text-white px-2 py-1 rounded text-[8px] font-mono border border-white/5 text-center whitespace-nowrap shrink-0"
+                            >
+                              ℹ️ /info
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSendChatMessage("/legal")}
+                              className="bg-black/40 hover:bg-[#C1FF00]/10 text-white/60 hover:text-[#C1FF00] px-2 py-1 rounded text-[8px] font-mono border border-white/5 text-center whitespace-nowrap shrink-0"
+                            >
+                              📜 /legal
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSendChatMessage("/support")}
+                              className="bg-black/40 hover:bg-black/70 text-white/60 hover:text-white px-2 py-1 rounded text-[8px] font-mono border border-white/5 text-center whitespace-nowrap shrink-0"
+                            >
+                              💬 /support
+                            </button>
+                          </div>
+
+                          {/* Chat footer input bar */}
+                          <form 
+                            onSubmit={(e) => { e.preventDefault(); handleSendChatMessage(); }} 
+                            className="flex items-center gap-1.5 mt-1 pt-1.5 border-t border-white/5 shrink-0"
+                          >
+                            <input
+                              type="text"
+                              value={userInputText}
+                              onChange={(e) => setUserInputText(e.target.value)}
+                              placeholder="Спросить про законы, налоги, оферту..."
+                              className="flex-1 bg-black/40 border border-white/5 rounded-full px-3 py-1 text-[9px] focus:outline-none focus:border-[#C1FF00]/40 text-white placeholder-white/35 font-sans"
+                            />
+                            <button
+                              type="submit"
+                              disabled={typingBot}
+                              className="w-7 h-7 bg-[#C1FF00] text-black rounded-full flex items-center justify-center transition hover:scale-105 shrink-0 disabled:opacity-50"
+                            >
+                              <Send className="w-3.5 h-3.5" />
+                            </button>
+                          </form>
+                          
                         </div>
                       )}
 

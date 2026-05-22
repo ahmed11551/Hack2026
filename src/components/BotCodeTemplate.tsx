@@ -20,23 +20,128 @@ dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def start_handler(message: types.Message):
-    # Кнопка подписки на канал для проверки Обязательной подписки (ОП)
+    # Главное интерактивное меню робота
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(text="📢 Подписаться на Канал", url="https://t.me/your_channel_username")
+            InlineKeyboardButton(text="⚡️ Открыть Mini App (Каталог)", web_app=WebAppInfo(url=WEB_APP_URL))
         ],
         [
-            InlineKeyboardButton(text="⚡️ Открыть Mini App (База Знаний)", web_app=WebAppInfo(url=WEB_APP_URL))
+            InlineKeyboardButton(text="💳 Прямая покупка подписки", callback_data="buy_tariff"),
+            InlineKeyboardButton(text="ℹ️ О проекте", callback_data="info_project")
+        ],
+        [
+            InlineKeyboardButton(text="📜 Юр. Информация и Оферта", callback_data="legal_info"),
+            InlineKeyboardButton(text="💬 Написать Юристу", callback_data="support_contact")
         ]
     ])
     
     welcome_text = (
         f"👋 *Приветствуем в Хак-Системе, {message.from_user.first_name}!*\\n\\n"
-        "Мы автоматизировали доступ к закрытым знаниям, схемам экономии и уникальным разборам.\\n\\n"
-        "📍 *Шаг 1:* Подпишитесь на наш официальный канал (кнопка ниже).\\n"
-        "📍 *Шаг 2:* Нажмите кнопку *Открыть Mini App*, чтобы получить секретные посты первого дня, активировать пробный период или войти в приватный VIP-клуб через СБП/рублёвые карты."
+        "Я — ваш интеллектуальный бот-юрист и ассистент закрытого канала.\\n\\n"
+        "Мы автоматизировали оплату и мгновенное открытие экспертных баз знаний в соответствии с законами РФ.\\n\\n"
+        "🤖 *Выберите необходимое действие в кнопках ниже:*\\n"
+        "🔹 Открыть Mini App — запуск веб-ориентированного каталога\\n"
+        "🔹 /buy — быстрая покупка подписки прямо в текущем чате\\n"
+        "🔹 /info — подробности функционирования и статистика окупаемости\\n"
+        "🔹 /legal — публичная оферта, реквизиты ИП и правила возврата\\n"
+        "🔹 /support — задать юридический/технический вопрос нашему ИИ"
     )
     await message.answer(welcome_text, reply_markup=keyboard, parse_mode="Markdown")
+
+@dp.message(Command("buy"))
+async def buy_handler(message: types.Message):
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(text="🌟 Оплатить VIP Месяц — 490 ₽", url="https://yookassa.ru/fast-pay-link-490"),
+        ],
+        [
+            InlineKeyboardButton(text="🎁 Пробный (7 дней) — 149 ₽", url="https://yookassa.ru/fast-pay-link-149"),
+            InlineKeyboardButton(text="💎 Навсегда — 1 490 ₽", url="https://yookassa.ru/fast-pay-link-1490")
+        ]
+    ])
+    await message.answer(
+        "💳 *Быстрая покупка подписки в рублях прямо в чате!*\\n\\n"
+        "Выберите желаемый VIP-тариф. Оплата мгновенно проходит через ЮKassa защищенным протоколом (СБП, МИР, СберПэй).\\n\\n"
+        "После фискализации и чека система сразу предоставит вам доступ ко всем схемам заработка!",
+        reply_markup=keyboard,
+        parse_mode="Markdown"
+    )
+
+@dp.message(Command("info"))
+async def info_handler(message: types.Message):
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🚀 Запустить Приложение", web_app=WebAppInfo(url=WEB_APP_URL))]
+    ])
+    await message.answer(
+        "ℹ️ *Информация о нашей экосистеме:*\\n\\n"
+        "• Данное решение представляет собой связку Telegram-канала, бота-префильтра и Mini App.\\n"
+        "• Трафик подписывается на канал и с помощью бота отфильтровывается для перехода на Mini App.\\n"
+        "• Монетизация базируется на продаже доступа к материалам повышенной ценности.\\n"
+        "• Средняя годовая доходность одного такого контейнера составляет от *1 200 000 до 3 600 000 рублей* при минимальном сопровождении.\\n\\n"
+        "Подходит как для самозанятых, так и для ИП в РФ.",
+        reply_markup=keyboard,
+        parse_mode="Markdown"
+    )
+
+@dp.message(Command("legal"))
+async def legal_handler(message: types.Message):
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(text="📄 Текст Оферты", callback_data="offer_doc"),
+            InlineKeyboardButton(text="💸 Правила возврата", callback_data="refund_rules")
+        ],
+        [
+            InlineKeyboardButton(text="💬 Наш Консультант", callback_data="support_contact")
+        ]
+    ])
+    legal_text = (
+        "📜 *Юридическая информация и оферта ст. 437 ГК РФ:*\\n\\n"
+        "Все транзакции проводятся официально оператором платежной инфраструктуры.\\n\\n"
+        "📍 *Реквизиты Продавца:*\\n"
+        "• *ИП Смирнов А.А.*\\n"
+        "• *ИНН:* 772545899321\\n"
+        "• *ОГРНИП:* 321774600124560\\n"
+        "• *Юридический адрес:* 115280, г. Москва, ул. Ленинская Слобода, д. 19\\n"
+        "• *Email поддержки:* legal@quantumtraffic.ru\\n\\n"
+        "Каждая транзакция формирует официальный чек в соответствии с ФЗ-54."
+    )
+    await message.answer(legal_text, reply_markup=keyboard, parse_mode="Markdown")
+
+@dp.message(Command("support"))
+async def support_handler(message: types.Message):
+    await message.answer(
+        "💬 *Юридическая и техническая служба поддержки:*\\n\\n"
+        "• Если у вас возникли вопросы по списаниям или требуется возврат средств согласно ст. 26.1 Закона РФ «О защите прав потребителей», отправьте письмо на *refund@quantumtraffic.ru*. Обработка заявок длится не более 24 часов.\\n"
+        "• По вопросам легального заведения налогового кабинета (Самозанятость, ИП на УСН 6%) пишите нашему ИИ-юристу напрямую.",
+        parse_mode="Markdown"
+    )
+
+# Обработка Callback-кнопок меню
+@dp.callback_query()
+async def callback_query_handler(callback: types.CallbackQuery):
+    if callback.data == "buy_tariff":
+        await buy_handler(callback.message)
+    elif callback.data == "info_project":
+        await info_handler(callback.message)
+    elif callback.data == "legal_info":
+        await legal_handler(callback.message)
+    elif callback.data == "support_contact":
+        await support_handler(callback.message)
+    elif callback.data == "offer_doc":
+        await callback.message.answer(
+            "📄 *Публичная оферта ИП Смирнов А.А.:*\\n\\n"
+            "Договор купли-продажи цифровой подписки на информационную базу данных. "
+            "Доступ открывается автоматически после успешного проведения платежа через сервис ЮKassa.",
+            parse_mode="Markdown"
+        )
+    elif callback.data == "refund_rules":
+        await callback.message.answer(
+            "💸 *Правила возврата средств:*\\n\\n"
+            "Возврат возможен до момента предоставления доступа к секретной базе. "
+            "Если доступ уже был получен, услуга считается оказанной в полном объеме.",
+            parse_mode="Markdown"
+        )
+    await callback.answer()
 
 async def main():
     print("🤖 Telegram бот успешно запущен и готов приносить рубли!")
