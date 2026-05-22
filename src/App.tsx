@@ -63,13 +63,29 @@ export default function App() {
   const [showTransactionAlert, setShowTransactionAlert] = useState<boolean>(false);
   const [showYooKassaReceipt, setShowYooKassaReceipt] = useState<boolean>(false);
 
+  // Legal compliance modal states (RF 2026, ФЗ-152, ФЗ-54 compliance for online merchant approval)
+  const [showOfferModal, setShowOfferModal] = useState<boolean>(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
+  const [showLegalContactsModal, setShowLegalContactsModal] = useState<boolean>(false);
+
   // Simulated Chat Bot Integration States & Logic
   const [chatMessages, setChatMessages] = useState<Array<{
     sender: "bot" | "user";
     text: string;
     time: string;
     buttons?: Array<{ text: string; action: string }>;
-  }>>([]);
+  }>>([
+    {
+      sender: "bot",
+      text: `👋 **Приветствуем в официальной Хак-Системе!**\n\nЯ — интеллектуальный бот-помощник Хак-Канала.\n\nМы автоматизировали доступ к закрытой базе практических инструкций, схем экономии и заработку с выводом прямо на карты банков РФ в рублях.\n\n🤖 **Главные команды бота:**\n🔹 /buy — Быстрая покупка подписки прямо в чате\n🔹 /info — Подробная информация о проекте и заработке\n🔹 /legal — Юридическая поддержка, публичная оферта и правила возврата средств\n🔹 /support — Написать в техподдержку / Наш ИИ-юрист`,
+      time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+      buttons: [
+        { text: "⚡ Открыть Mini App", action: "miniapp" },
+        { text: "💳 Прямая оплата подписки", action: "buy" },
+        { text: "📜 Юридические документы", action: "legal" }
+      ]
+    }
+  ]);
   const [userInputText, setUserInputText] = useState<string>("");
   const [typingBot, setTypingBot] = useState<boolean>(false);
 
@@ -1701,23 +1717,295 @@ export default function App() {
 
         </div>
 
-        {/* BOTTOM SECTION: Social proof metrics footer styled with bold aesthetic */}
-        <div className="mt-12 flex flex-col md:flex-row items-center gap-6 border-t border-white/10 pt-8 pb-4 relative z-10 text-center md:text-left">
-          <div className="flex -space-x-3 select-none">
-            <span className="w-8 h-8 rounded-full bg-slate-800 border-2 border-black flex items-center justify-center text-[10px] font-bold">🔥</span>
-            <span className="w-8 h-8 rounded-full bg-[#111] border-2 border-black flex items-center justify-center text-[10px] font-bold">🤖</span>
-            <span className="w-8 h-8 rounded-full bg-slate-700 border-2 border-black flex items-center justify-center text-[10px] font-bold">₽</span>
+        {/* BOTTOM SECTION: Fully Compliant Russian Legal & Quality Footer (RF 2026, ФЗ-152, ФЗ-54) */}
+        <div className="mt-16 pt-8 border-t border-white/10 space-y-6 relative z-10">
+          
+          {/* Top Footer line */}
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-6 text-center lg:text-left">
+            <div className="flex items-center gap-4 flex-col sm:flex-row">
+              <div className="flex -space-x-3 select-none shrink-0">
+                <span className="w-8 h-8 rounded-full bg-slate-800 border-2 border-black flex items-center justify-center text-[10px] font-bold">🔥</span>
+                <span className="w-8 h-8 rounded-full bg-[#111] border-2 border-black flex items-center justify-center text-[10px] font-bold">🤖</span>
+                <span className="w-8 h-8 rounded-full bg-[#C1FF00]/20 text-[#C1FF00] border-2 border-black flex items-center justify-center text-[10px] font-bold">₽</span>
+              </div>
+              <div className="text-[11px] uppercase tracking-[0.05em] font-mono text-white/50 max-w-xl">
+                Этот планер использует передовые модели <span className="text-[#C1FF00] italic font-bold">Gemini 3.5 Flash</span> для расчета схем удержания. 
+                Платформа автоматизирована и готова к приему платежей в рублях.
+              </div>
+            </div>
+
+            <div className="text-[10px] font-mono text-[#C1FF00] border border-[#C1FF00]/30 bg-[#C1FF00]/5 p-2 px-4 uppercase tracking-widest rounded-lg">
+              ФЗ-54 • ФЗ-152 ГОТОВНОСТЬ 100% 🚀
+            </div>
           </div>
-          <div className="text-[11px] uppercase tracking-[0.1em] font-mono text-white/60">
-            Этот планер использует передовые модели <span className="text-[#C1FF00] italic font-bold">Gemini 3.5 Flash</span> для расчета схем удержания. 
-            Все готово к продвижению.
+
+          {/* Legal info links row for payment gateway / bank moderation */}
+          <div className="flex flex-wrap items-center justify-center lg:justify-between gap-4 text-[10px] md:text-xs font-mono text-white/40 pt-2 border-t border-white/5">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center">
+              <button 
+                type="button" 
+                onClick={() => setShowOfferModal(true)} 
+                className="hover:text-[#C1FF00] transition duration-200 underline decoration-white/20 hover:decoration-[#C1FF00]"
+              >
+                📜 Публичная Оферта
+              </button>
+              <button 
+                type="button" 
+                onClick={() => setShowPrivacyModal(true)} 
+                className="hover:text-[#C1FF00] transition duration-200 underline decoration-white/20 hover:decoration-[#C1FF00]"
+              >
+                🔒 Политика Конфиденциальности
+              </button>
+              <button 
+                type="button" 
+                onClick={() => setShowLegalContactsModal(true)} 
+                className="hover:text-[#C1FF00] transition duration-200 underline decoration-white/20 hover:decoration-[#C1FF00]"
+              >
+                💼 Реквизиты и Контакты
+              </button>
+            </div>
+
+            <div className="text-[10px] text-white/30 text-center lg:text-right">
+              © 2026 startappai.ru • Все права защищены
+            </div>
           </div>
-          <div className="md:ml-auto text-[10px] font-mono text-[#C1FF00] border border-[#C1FF00] p-1.5 px-3 uppercase tracking-widest rounded-md bg-[#C1FF00]/5 hover:bg-[#C1FF00]/20 transition duration-200">
-            Платформа монетизации готова 🚀
-          </div>
+
+          {/* Educational / Simulation Legal Disclaimer */}
+          <p className="text-[9px] text-white/25 leading-normal max-w-4xl mx-auto text-center border-t border-white/5 pt-4">
+            <b>УВЕДОМЛЕНИЕ О СИМУЛЯЦИИ:</b> Данный сайт представляет собой интерактивный образовательный конструктор авто-воронок и планер Telegram-каналов. Все расчеты доходности, показатели конверсии, симуляция YooKassa и генерация чеков ФЗ-54 являются интерактивной демонстрацией возможностей платформы и носят исключительно информационный и симуляционный характер. Для запуска реальных продаж используйте скачиваемые исходные коды бота и связывайте их со своими легально зарегистрированными аккаунтами ЮKassa / Банков РФ.
+          </p>
+
         </div>
 
       </div>
+
+      {/* ==================== LEGAL MODALS FOR COMPLIANCE ==================== */}
+
+      {/* 1. PUBLIC OFFER MODAL */}
+      {showOfferModal && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in select-text">
+          <div className="bg-[#111] border border-[#C1FF00]/30 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 bg-[#C1FF00] rounded-full" />
+                <h3 className="font-sans font-black text-lg text-white uppercase tracking-tight">Договор купли-продажи (Публичная оферта)</h3>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setShowOfferModal(false)}
+                className="text-white/50 hover:text-white font-mono text-sm uppercase font-bold border border-white/10 p-1 px-2.5 rounded hover:bg-white/5"
+              >
+                [Закрыть ✕]
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto space-y-4 text-xs text-white/80 leading-relaxed font-sans scrollbar-thin">
+              <p className="font-bold text-[#C1FF00] font-mono">Редакция от 22 мая 2026 года</p>
+              
+              <div className="space-y-1.5 font-mono text-[11px] bg-white/5 p-3 rounded-xl border border-white/5">
+                <p className="font-bold">📍 РЕКВИЗИТЫ ПРОДАВЦА:</p>
+                <p>• <b>Продавец:</b> Самозанятая Себиева Рояна</p>
+                <p>• <b>ИНН:</b> 770980461804</p>
+                <p>• <b>Банк СМЗ:</b> ООО "ОЗОН БАНК"</p>
+                <p>• <b>Расчетный счет:</b> 40914810500038630929</p>
+                <p>• <b>БИК:</b> 044525068</p>
+                <p>• <b>Сайт ККТ:</b> startappai.ru</p>
+                <p>• <b>E-mail:</b> help@startappai.ru</p>
+              </div>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">1. ОБЩИЕ ПОЛОЖЕНИЯ</h4>
+              <p>
+                В соответствии со статьей 437 Гражданского Кодекса Российской Федерации (ГК РФ) данный документ является публичной офертой Самозанятой Себиевой Рояны (далее по тексту — «Исполнитель»), и содержит все существенные условия договора на оказание информационно-консультационных услуг и предоставление доступа к электронным базам данных.
+              </p>
+              <p>
+                Акцептом (принятием) условий настоящей оферты является совершение Покупателем оплаты в адрес Исполнителя с помощью платежного шлюза сервиса ЮKassa (ООО НКО "ЮМани"). Совершая оплату, Покупатель выражает полное и безоговорочное согласие со всеми пунктами настоящего соглашения.
+              </p>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">2. ПРЕДМЕТ ДОГОВОРА</h4>
+              <p>
+                Исполнитель обязуется предоставить Покупателю услуги по доступу к закрытой информационной базе знаний по заработку, схемам финансовой экономии, сценариям трафика и интерактивным планам («VIP-Клуб»), а Покупатель обязуется оплатить эти услуги согласно действующим тарифам в рублях РФ.
+              </p>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">3. СТОИМОСТЬ УСЛУГ И ПОРЯДОК ОПЛАТЫ</h4>
+              <p>
+                • Стоимость подписок указывается в Mini App и составляет: Пробный период 7 дней — 149 ₽, VIP Месяц — 490 ₽, VIP Навсегда — 1 490 ₽.<br />
+                • Все платежи обрабатываются в рублях Российской Федерации. <br />
+                • Оплата производится безналичным путем посредством банковских карт (МИР, Visa, Mastercard, СберПэй) или Системы Быстрых Платежей (СБП).<br />
+                • Фискальный чек в электронном виде формируется автоматически платежной системой согласно ФЗ-54 и направляется Покупателю.
+              </p>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">4. ПОРЯДОК ВОЗВРАТА СРЕДСТВ</h4>
+              <p>
+                • Согласно закону РФ «О защите прав потребителей» (ст. 26.1 о дистанционном способе продажи) и Гражданскому кодексу РФ, Покупатель имеет право отказаться от услуг в любой момент времени до фактического получения доступа к закрытым материалам (до активации VIP-статуса).<br />
+                • Поскольку после оплаты доступ к базе знаний предоставляется мгновенно в автоматическом режиме через интерфейс Telegram Mini App, обязательства Исполнителя считаются выполненными в полном объеме. Информационная услуга считается оказанной надлежащим качеством сразу после разблокировки контента.<br />
+                • После активации доступа возврат стоимости подписки за фактически оказанную услугу не производится.<br />
+                • При технических неполадках (списание произошло, но доступ не открылся), Исполнитель гарантирует активацию доступа вручную либо полный возврат денежных средств на реквизиты плательщика в течение 1–3 рабочих дней по обращению на почту Исполнителя.
+              </p>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">5. ИНТЕЛЛЕКТУАЛЬНАЯ СОБСТВЕННОСТЬ</h4>
+              <p>
+                Все материалы, тексты, графические интерфейсы, скрипты и калькуляторы являются объектом интеллектуальной собственности Исполнителя. Запрещается копирование, коммерческая перепродажа или распространение закрытых схем без явного письменного согласия Исполнителя.
+              </p>
+            </div>
+
+            <div className="p-6 border-t border-white/10 bg-black flex justify-end">
+              <button 
+                type="button" 
+                onClick={() => setShowOfferModal(false)}
+                className="bg-[#C1FF00] text-black font-sans font-black text-xs uppercase tracking-widest px-6 py-3 rounded-lg hover:bg-white transition"
+              >
+                Я ПРИНИМАЮ УСЛОВИЯ ОФЕРТЫ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2. PRIVACY POLICY MODAL */}
+      {showPrivacyModal && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in select-text">
+          <div className="bg-[#111] border border-[#C1FF00]/30 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 bg-[#C1FF00] rounded-full" />
+                <h3 className="font-sans font-black text-lg text-white uppercase tracking-tight">Политика Конфиденциальности (ФЗ-152)</h3>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setShowPrivacyModal(false)}
+                className="text-white/50 hover:text-white font-mono text-sm uppercase font-bold border border-white/10 p-1 px-2.5 rounded hover:bg-white/5"
+              >
+                [Закрыть ✕]
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto space-y-4 text-xs text-white/80 leading-relaxed font-sans scrollbar-thin">
+              <p className="font-bold text-[#C1FF00] font-mono">Соответствует требованиям Федерального закона № 152-ФЗ «О персональных данных»</p>
+              
+              <p>
+                Настоящая Политика конфиденциальности персональных данных (далее — Политика) действует в отношении всей информации, которую Исполнитель (Самозанятая Себиева Рояна) может получить о Пользователе во время использования сайта startappai.ru и Telegram Mini App.
+              </p>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">1. КАКИЕ ДАННЫЕ МЫ СОБИРАЕМ</h4>
+              <p>
+                Мы обрабатываем только минимальный набор данных, необходимый для предоставления доступа к сервисам автоматизированного конструктора и платежного шлюза:
+                <br />
+                • Имя пользователя Telegram / Идентификатор Telegram ID.<br />
+                • E-mail адрес (только при отправке обращений в техническую поддержку).<br />
+                • Номер телефона (при вводе пользователем для подтверждения СБП вызовов).<br />
+                • Технические метаданные (IP-адрес, тип браузера, cookies файлы для фиксации сессий).
+              </p>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">2. ЦЕЛИ ОБРАБОТКИ ДАННЫХ</h4>
+              <p>
+                Персональные данные Пользователя собираются с целью:
+                <br />
+                • Идентификации плательщика в системе ЮKassa для выпуска чеков ФЗ-54.<br />
+                • Автоматического открытия доступа к VIP-материалам внутри Telegram Mini App.<br />
+                • Оказания оперативной технической и юридической поддержки.<br />
+                • Улучшения пользовательского опыта и аналитики систем прогнозирования воронки.
+              </p>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">3. БЕЗОПАСНОСТЬ И ХРАНЕНИЕ ДАННЫХ</h4>
+              <p>
+                • Все собранные данные хранятся на серверах провайдеров, расположенных в физических дата-центрах на территории Российской Федерации.<br />
+                • Данные шифруются по протоколам SSL/TLS. Мы не передаем персональные данные третьим лицам, за исключением случаев проведения официальных транзакций через лицензированные банки и платежный сервис ЮKassa РФ.<br />
+                • Срок хранения данных составляет период пользования ресурсом либо до востребования по запросу удаления.
+              </p>
+
+              <h4 className="font-bold text-white uppercase font-mono mt-4">4. ПРАВА ПОЛЬЗОВАТЕЛЕЙ</h4>
+              <p>
+                Пользователь вправе в любой момент направить письменный запрос на адрес электронной почты <b>help@startappai.ru</b> с требованием о доступе, корректировке или полном удалении его личных данных из баз данных системы. Исполнитель производит удаление в течение 24 часов с момента одобрения заявки.
+              </p>
+            </div>
+
+            <div className="p-6 border-t border-white/10 bg-black flex justify-end">
+              <button 
+                type="button" 
+                onClick={() => setShowPrivacyModal(false)}
+                className="bg-[#C1FF00] text-black font-sans font-black text-xs uppercase tracking-widest px-6 py-3 rounded-lg hover:bg-white transition"
+              >
+                СОГЛАСЕН НА ОБРАБОТКУ ДАННЫХ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. LEGAL DETAILS MODAL */}
+      {showLegalContactsModal && (
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in select-text">
+          <div className="bg-[#111] border border-[#C1FF00]/30 rounded-2xl max-w-md w-full overflow-hidden shadow-2xl font-sans">
+            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black">
+              <h3 className="font-sans font-black text-sm text-white uppercase tracking-tight">Реквизиты оператора</h3>
+              <button 
+                type="button" 
+                onClick={() => setShowLegalContactsModal(false)}
+                className="text-white/50 hover:text-white font-mono text-[10px] uppercase font-bold border border-white/10 p-1 px-2.5 rounded"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4 text-xs text-white/80 leading-relaxed font-mono">
+              <p className="font-bold text-[#C1FF00] uppercase text-center tracking-wider pb-2 border-b border-white/5">ИНФОРМАЦИЯ О ПРОДАВЦЕ</p>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-white/40">ОПЕРАТОР:</span>
+                  <span className="font-bold text-white">Самозанятая Себиева Рояна</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">ИНН:</span>
+                  <span className="font-bold text-white">770980461804</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">РЕЖИМ НАЛОГА:</span>
+                  <span className="text-white">НПД (Самозанятость)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">БАНК СМЗ:</span>
+                  <span className="text-white">ООО "ОЗОН БАНК"</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">РАСЧЕТНЫЙ СЧЕТ:</span>
+                  <span className="text-white text-[10px]">40914810500038630929</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">БИК:</span>
+                  <span className="text-white">044525068</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">ОПЕРАТОР КАССЫ:</span>
+                  <span className="text-white">ООО НКО "ЮМани" (ЮKassa)</span>
+                </div>
+                <div className="flex justify-between border-t border-white/5 pt-2">
+                  <span className="text-white/40">EMAIL ПОДДЕРЖКИ:</span>
+                  <span className="text-[#C1FF00] font-bold">help@startappai.ru</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/40">ОТВЕТСТВЕННОСТЬ:</span>
+                  <span className="text-white text-[10px] text-right">ФЗ-54 фискализация</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-white/5 rounded-xl border border-white/10 text-[10px] text-white/60 leading-normal font-sans">
+                🔐 <b>Защита прав потребителей:</b> Любые претензии и запросы возвратов по факту неполного оказания услуг принимаются круглосуточно на официальную почту. Регламент ответа — до 24 часов. Налоги уплачиваются через автоматизированный шлюз Кабинета Налогоплательщика.
+              </div>
+            </div>
+
+            <div className="p-4 bg-black flex justify-center border-t border-white/5">
+              <button 
+                type="button" 
+                onClick={() => setShowLegalContactsModal(false)}
+                className="w-full bg-[#C1FF00] text-black font-sans font-black text-xs uppercase py-2.5 rounded-lg hover:bg-white transition text-center"
+              >
+                ПОДТВЕРДИТЬ РЕКВИЗИТЫ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
